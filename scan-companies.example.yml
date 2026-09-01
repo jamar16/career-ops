@@ -1,0 +1,44 @@
+# scan-companies.yml — zero-token scan.mjs configuration.
+#
+# Copy this file to scan-companies.yml and fill in your own tracked_companies
+# and title_filter. Deliberately kept separate from portals.yml: if you use
+# the day-rotation scan pattern (portals-monday/wednesday/friday.yml swapped
+# into portals.yml for each scheduled run), a crash mid-run can leave
+# portals.yml overwritten with no restore. scan.mjs reads THIS file instead,
+# so its config survives regardless of what happens to portals.yml.
+#
+# HOW TO CUSTOMIZE:
+#   1. Copy this file to scan-companies.yml in the project root
+#   2. Add/remove companies in tracked_companies (provider must be one of:
+#      greenhouse, lever, ashby, bamboohr, teamtailor — see scan.mjs PROVIDERS)
+#   3. Edit title_filter.positive/negative with YOUR target role keywords
+#   4. Set enabled: false on companies you don't want scanned
+
+tracked_companies:
+  - name: "Acme Robotics"
+    provider: greenhouse
+    slug: acme-robotics
+    enabled: true
+    notes: "Example entry — replace with a real company on Greenhouse."
+
+  - name: "Example Health Systems"
+    provider: lever
+    slug: example-health
+    enabled: true
+    notes: "Example entry — replace with a real company on Lever."
+
+  - name: "Sample Financial Group"
+    provider: ashby
+    slug: sample-financial
+    enabled: false
+    notes: "Example entry, disabled — flip enabled: true once the slug is real."
+
+title_filter:
+  positive:
+    - "software engineer"
+    - "backend engineer"
+    - "platform engineer"
+  negative:
+    - "customer service"
+    - "sales rep"
+    - "internship"

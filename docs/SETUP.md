@@ -42,6 +42,16 @@ Edit `portals.yml`:
 - Add companies you want to track in `tracked_companies`
 - Customize `search_queries` for your preferred job boards
 
+`portals.yml` drives the agent-based scan (`modes/scan.md`). The separate zero-token `scan.mjs` (`npm run scan`) reads its own config instead, so a crash mid-scan can never overwrite it:
+
+```bash
+cp scan-companies.example.yml scan-companies.yml
+```
+
+Edit `tracked_companies` (provider must be `greenhouse`, `lever`, `ashby`, `bamboohr`, or `teamtailor`) and `title_filter`.
+
+(Optional) Set up [Skyvern](../README.md#offer-verification-skyvern) for browser-based offer verification -- see the README for the full setup.
+
 ### 5. Start using
 
 Open Claude Code in this directory:

@@ -48,6 +48,14 @@ const today = new Date().toISOString().slice(0, 10);
 
 // ---- Load config ----
 
+if (!existsSync(SCAN_COMPANIES_FILE)) {
+  console.error(
+    `scan-companies.yml not found.\n`
+    + `Copy the template and add your own companies:\n`
+    + `  cp scan-companies.example.yml scan-companies.yml`
+  );
+  process.exit(1);
+}
 const scanConfig = yaml.load(readFileSync(SCAN_COMPANIES_FILE, 'utf-8'));
 const trackedCompanies = (scanConfig.tracked_companies || []).filter(c => c.enabled !== false);
 const titleFilter = scanConfig.title_filter || { positive: [], negative: [] };

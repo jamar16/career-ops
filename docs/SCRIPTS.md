@@ -180,10 +180,11 @@ Each URL gets a verdict: `active`, `expired`, or `uncertain` with a reason.
 
 ## scan
 
-Zero-token portal scanner. Hits ATS APIs (Greenhouse, Ashby, Lever) and career pages directly — no LLM tokens consumed. Reads `portals.yml` for target companies and search queries, outputs matching listings to stdout and optionally appends to `data/pipeline.md`.
+Zero-token portal scanner. Hits ATS APIs (Greenhouse, Lever, Ashby, BambooHR, Teamtailor) directly via plain HTTP — no LLM tokens consumed. Reads `tracked_companies`/`title_filter` from `scan-companies.yml` (copy `scan-companies.example.yml` to get started -- kept separate from `portals.yml`, which drives the agent-based scan in `modes/scan.md` instead), and appends new matches to `data/pipeline.md` + `data/scan-history.tsv`.
 
 ```bash
 npm run scan
+node scan.mjs --dry-run   # preview without writing
 ```
 
-**Exit codes:** `0` scan completed, `1` configuration error or no portals.yml found.
+**Exit codes:** `0` scan completed, `1` scan-companies.yml missing.

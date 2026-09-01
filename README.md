@@ -91,6 +91,7 @@ npm run doctor                     # Validates all prerequisites
 # 3. Configure
 cp config/profile.example.yml config/profile.yml  # Edit with your details
 cp templates/portals.example.yml portals.yml       # Customize companies
+cp scan-companies.example.yml scan-companies.yml   # Zero-token scan.mjs config
 
 # 4. Add your CV
 # Create cv.md in the project root with your CV in markdown
@@ -200,6 +201,50 @@ You paste a job URL or description
  Report  PDF  Tracker
   .md   .pdf   .tsv
 ```
+
+## Offer Verification (Skyvern)
+
+Before trusting that a job posting is still live, career-ops verifies it with a real browser instead of a plain HTTP fetch -- WebSearch/WebFetch results can lag or return a cached page for a listing that's actually closed. This project's `CLAUDE.md` treats that verification as mandatory for interactive use (batch workers running headless fall back to WebFetch and mark the report `**Verification:** unconfirmed (batch mode)`).
+
+It works through [Skyvern](https://www.skyvern.com/) exposed as an MCP server with two tools:
+
+1. `skyvern_navigate` -- opens the job URL in a real browser session
+2. `skyvern_extract` -- reads back the page's title, description, and whether an Apply/Submit button is present
+
+A page with only a footer/navbar and no JD is treated as closed; title + description + Apply button is treated as active.
+
+### Setup
+
+```bash
+# 1. Get a Skyvern API key (https://www.skyvern.com/) or run Skyvern self-hosted
+# 2. Install the Skyvern CLI (ships a `skyvern` binary, e.g. via pip install skyvern)
+pip install skyvern
+
+# 3. Create an MCP config that starts Skyvern as an MCP server over stdio
+cat > skyvern.mcp.json <<'EOF'
+{
+  "mcpServers": {
+    "skyvern": {
+      "command": "skyvern",
+      "args": ["run", "mcp"],
+      "env": { "SKYVERN_API_KEY": "your-skyvern-api-key" }
+    }
+  }
+}
+EOF
+
+# 4. Allow the tool in a Claude Code settings file
+cat > skyvern.settings.json <<'EOF'
+{
+  "permissions": { "allow": ["mcp__skyvern"] }
+}
+EOF
+
+# 5. Launch Claude Code with both files wired in
+claude --mcp-config skyvern.mcp.json --settings skyvern.settings.json
+```
+
+Keep `SKYVERN_API_KEY` out of anything you commit -- put `skyvern.mcp.json` outside the repo (e.g. in `~/.claude/`) or add it to `.gitignore` if you keep it local to the project.
 
 ## Pre-configured Portals
 
