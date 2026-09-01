@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node update-system.mjs *)",
+      "Bash(node cv-sync-check.mjs)",
+      "Bash(node dedup-tracker.mjs *)",
+      "Bash(node merge-tracker.mjs *)",
+      "Bash(node scan.mjs *)"
+    ]
+  }
+}
